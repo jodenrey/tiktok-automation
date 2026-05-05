@@ -1,4 +1,4 @@
-# ReelFarm — AI TikTok Slideshow Automation
+# AI TikTok Slideshow Automation
 
 A full-stack AI-powered platform that auto-generates and publishes TikTok slideshows on a schedule.
 
