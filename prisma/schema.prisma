@@ -1,0 +1,269 @@
+// ReelFarm — AI TikTok Slideshow Automation
+//
+// We default to PostgreSQL via DATABASE_URL. For local-only dev with no
+// Postgres instance, you can swap `provider` to "sqlite" and set
+// DATABASE_URL="file:./dev.db" — every model below is compatible with both.
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// -------------------- Auth / User --------------------
+
+model User {
+  id            String    @id @default(cuid())
+  email         String    @unique
+  name          String?
+  image         String?
+  passwordHash  String?
+  emailVerified DateTime?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  credits          Int    @default(50) // monthly export credits
+  purchasedCredits Int    @default(0)
+  subscriptionTier String @default("Starter")
+  stripeCustomerId String? @unique
+
+  accounts       Account[]
+  sessions       Session[]
+  automations    Automation[]
+  collections    Collection[]
+  tiktokAccounts TikTokAccount[]
+  slideshows     Slideshow[]
+  posts          Post[]
+}
+
+// Idempotent Stripe webhook delivery (Stripe may retry the same event id).
+model StripeEvent {
+  id        String   @id // Stripe event id (evt_...)
+  type      String
+  createdAt DateTime @default(now())
+}
+
+model Account {
+  id                String  @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String? @db.Text
+  access_token      String? @db.Text
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String? @db.Text
+  session_state     String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model VerificationToken {
+  identifier String
+  token      String   @unique
+  expires    DateTime
+
+  @@unique([identifier, token])
+}
+
+// -------------------- Automations --------------------
+
+enum AutomationStatus {
+  active
+  paused
+  out_of_credits
+}
+
+model Automation {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  title         String
+  niche         String?
+  language      String           @default("English")
+  status        AutomationStatus @default(active)
+  numOfSlides   Int              @default(6)
+  hooks         String[] // rotating topics the AI picks from
+  stylePrompt   String  @db.Text // controls fonts, sizing, tone, etc.
+
+  // image source
+  imageSource     String  @default("pinterest") // "pinterest" | "unsplash" | "collection"
+  collectionId    String?
+  collection      Collection? @relation(fields: [collectionId], references: [id], onDelete: SetNull)
+
+  // tiktok config
+  tiktokAccountId String?
+  tiktokAccount   TikTokAccount? @relation(fields: [tiktokAccountId], references: [id], onDelete: SetNull)
+  autoPost        Boolean @default(true)
+  postMode        String  @default("DIRECT_POST") // DIRECT_POST | MEDIA_UPLOAD
+  visibility      String  @default("PUBLIC_TO_EVERYONE")
+  captionMode     String  @default("prompt") // "prompt" | "static"
+  captionPrompt   String  @default("Write a short, casual TikTok caption that hooks the viewer.")
+  captionStatic   String?
+
+  schedules  Schedule[]
+  slideshows Slideshow[]
+}
+
+model Schedule {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+
+  automationId String
+  automation   Automation @relation(fields: [automationId], references: [id], onDelete: Cascade)
+
+  cron     String // e.g. "0 14 * * *" — interpreted in PST
+  jobId    String? // bullmq repeatable job id
+  isActive Boolean @default(true)
+}
+
+// -------------------- Slideshows / Slides --------------------
+
+enum SlideshowStatus {
+  draft
+  generating
+  rendering
+  completed
+  failed
+}
+
+model Slideshow {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  automationId String?
+  automation   Automation? @relation(fields: [automationId], references: [id], onDelete: SetNull)
+
+  hook         String?
+  status       SlideshowStatus @default(draft)
+  errorMessage String? @db.Text
+
+  caption  String? @db.Text
+  hashtags String[]
+
+  slides Slide[]
+  post   Post?
+}
+
+model Slide {
+  id        String   @id @default(cuid())
+  index     Int
+  imageUrl  String?  @db.Text
+  imageQuery String? // search query that found the image (for re-fetching)
+  text      String   @db.Text
+  subtext   String?  @db.Text
+  style     String   @default("outline") // text style enum from skill.md
+  fontSize  String   @default("medium")
+
+  slideshowId String
+  slideshow   Slideshow @relation(fields: [slideshowId], references: [id], onDelete: Cascade)
+
+  @@unique([slideshowId, index])
+}
+
+// -------------------- Posts (published content) --------------------
+
+enum PostStatus {
+  pending
+  published
+  failed
+}
+
+model Post {
+  id          String     @id @default(cuid())
+  createdAt   DateTime   @default(now())
+  publishedAt DateTime?
+
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  slideshowId String    @unique
+  slideshow   Slideshow @relation(fields: [slideshowId], references: [id], onDelete: Cascade)
+
+  status        PostStatus @default(pending)
+  errorMessage  String?    @db.Text
+  tiktokPostId  String? // returned by TikTok API after publish
+
+  // analytics (synced from TikTok)
+  views     Int @default(0)
+  likes     Int @default(0)
+  comments  Int @default(0)
+  shares    Int @default(0)
+  bookmarks Int @default(0)
+}
+
+// -------------------- Image Collections --------------------
+
+model Collection {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  name        String
+  description String?
+
+  images      CollectionImage[]
+  automations Automation[]
+}
+
+model CollectionImage {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+
+  collectionId String
+  collection   Collection @relation(fields: [collectionId], references: [id], onDelete: Cascade)
+
+  url     String  @db.Text
+  width   Int?
+  height  Int?
+  altText String?
+}
+
+// -------------------- TikTok accounts --------------------
+
+model TikTokAccount {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  accountUsername String
+  accountName     String?
+  avatarUrl       String?
+
+  // OAuth tokens (encrypted in real deployments)
+  accessToken  String? @db.Text
+  refreshToken String? @db.Text
+  expiresAt    DateTime?
+
+  automations Automation[]
+
+  @@unique([userId, accountUsername])
+}
