@@ -4,7 +4,7 @@ import bcrypt from "bcryptjs";
 const prisma = new PrismaClient();
 
 async function main() {
-  const email = "demo@reelfarm.dev";
+  const email = "demo@tiktok-automation.dev";
   const passwordHash = await bcrypt.hash("password123", 10);
 
   const user = await prisma.user.upsert({

@@ -34,7 +34,7 @@ export interface GenerateInput {
   captionPrompt?: string; // separate prompt for caption + hashtags
 }
 
-const SYSTEM_PROMPT = `You are ReelFarm's slideshow content engine. You write authentic, emotional, first-person TikTok carousel content that hooks viewers within the first slide.
+const SYSTEM_PROMPT = `You are tiktok-automation's slideshow content engine. You write authentic, emotional, first-person TikTok carousel content that hooks viewers within the first slide.
 
 Rules:
 - NEVER mention any brand or product name in slide text.

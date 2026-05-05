@@ -1,4 +1,4 @@
-# AI TikTok Slideshow Automation
+# tiktok-automation
 
 A full-stack AI-powered platform that auto-generates and publishes TikTok slideshows on a schedule.
 
@@ -58,8 +58,8 @@ If `UNSPLASH_ACCESS_KEY` is **not** set, image search falls back to seeded Picsu
 npm install
 
 # 2. Bring up Postgres + Redis (or point at hosted ones)
-docker run --name reelfarm-pg -e POSTGRES_PASSWORD=postgres -p 5432:5432 -d postgres:16
-docker run --name reelfarm-redis -p 6379:6379 -d redis:7
+docker run --name tiktok-automation-pg -e POSTGRES_PASSWORD=postgres -p 5432:5432 -d postgres:16
+docker run --name tiktok-automation-redis -p 6379:6379 -d redis:7
 
 # 3. Configure env
 cp .env.example .env
@@ -67,7 +67,7 @@ cp .env.example .env
 
 # 4. Push schema + seed
 npm run db:push
-npm run db:seed     # creates demo@reelfarm.dev / password123
+npm run db:seed     # creates demo@tiktok-automation.dev / password123
 
 # 5. Run the app
 npm run dev         # → http://localhost:3000
@@ -79,7 +79,7 @@ npm run worker
 ### Default demo credentials (after `npm run db:seed`)
 
 ```
-Email:    demo@reelfarm.dev
+Email:    demo@tiktok-automation.dev
 Password: password123
 ```
 
@@ -101,7 +101,7 @@ Credits are appended to **`purchasedCredits`** on `checkout.session.completed`. 
 ## Project structure
 
 ```
-reelfarm-clone/
+tiktok-automation/
 ├── prisma/
 │   ├── schema.prisma          # User, Automation, Schedule, Slideshow, Slide, Post, Collection, TikTokAccount
 │   └── seed.ts                # demo user + automation

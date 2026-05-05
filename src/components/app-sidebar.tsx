@@ -43,7 +43,7 @@ export function AppSidebar({ user }: SidebarProps) {
         <div className="grid h-7 w-7 place-items-center rounded-md bg-gradient-to-br from-violet-500 via-fuchsia-500 to-orange-400 text-white shadow-lg shadow-fuchsia-500/30">
           <Sparkles className="h-3.5 w-3.5" />
         </div>
-        ReelFarm
+        tiktok-automation
       </Link>
       <nav className="flex flex-1 flex-col gap-1">
         {NAV.map((item) => {

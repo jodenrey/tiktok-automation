@@ -22,7 +22,7 @@ export default function LandingPage() {
       <header className="relative z-20 mx-auto flex max-w-6xl items-center justify-between px-6 py-5">
         <Link href="/" className="flex items-center gap-2 font-semibold">
           <Logo />
-          <span>ReelFarm</span>
+          <span>tiktok-automation</span>
         </Link>
         <nav className="hidden md:flex items-center gap-7 text-sm text-muted-foreground">
           <a href="#features" className="hover:text-foreground transition-colors">Features</a>
@@ -50,7 +50,7 @@ export default function LandingPage() {
           that <span className="bg-gradient-to-br from-violet-400 via-fuchsia-400 to-orange-300 bg-clip-text text-transparent">runs itself.</span>
         </h1>
         <p className="mx-auto mt-6 max-w-2xl text-lg text-muted-foreground">
-          Set up an automation once. Pick a niche, write a style prompt, plug in your TikTok — ReelFarm generates carousels, finds images, writes captions, and publishes on schedule.
+          Set up an automation once. Pick a niche, write a style prompt, plug in your TikTok — tiktok-automation generates carousels, finds images, writes captions, and publishes on schedule.
         </p>
         <div className="mt-10 flex justify-center gap-3">
           <Button asChild variant="primary" size="lg">
@@ -157,7 +157,7 @@ export default function LandingPage() {
           Stop posting. Start automating.
         </h2>
         <p className="mt-3 text-muted-foreground">
-          Connect your TikTok in two clicks. ReelFarm handles the rest.
+          Connect your TikTok in two clicks. tiktok-automation handles the rest.
         </p>
         <Button asChild variant="primary" size="lg" className="mt-8">
           <Link href="/signup">
@@ -167,7 +167,7 @@ export default function LandingPage() {
       </section>
 
       <footer className="border-t border-white/5 py-10 text-center text-xs text-muted-foreground">
-        © {new Date().getFullYear()} ReelFarm — built with Next.js, Prisma, and Claude.
+        © {new Date().getFullYear()} tiktok-automation — built with Next.js, Prisma, and Claude.
       </footer>
     </main>
   );
@@ -255,7 +255,7 @@ const features = [
     icon: Wand2,
     title: "Style prompt editor",
     body:
-      "Write once: tone, slide count, font sizes, text positions, hooks. ReelFarm respects every detail.",
+      "Write once: tone, slide count, font sizes, text positions, hooks. tiktok-automation respects every detail.",
   },
   {
     icon: Zap,
@@ -275,7 +275,7 @@ const steps = [
   {
     title: "Connect a TikTok account",
     body:
-      "OAuth into your TikTok in two clicks. ReelFarm posts on your behalf using the Content Posting API.",
+      "OAuth into your TikTok in two clicks. tiktok-automation posts on your behalf using the Content Posting API.",
   },
   {
     title: "Create an automation",
@@ -285,7 +285,7 @@ const steps = [
   {
     title: "Watch it ship",
     body:
-      "ReelFarm generates fresh slideshows on your cron, never repeating the last 20 topics. You preview, it publishes.",
+      "tiktok-automation generates fresh slideshows on your cron, never repeating the last 20 topics. You preview, it publishes.",
   },
 ];
 

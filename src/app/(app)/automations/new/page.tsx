@@ -32,7 +32,7 @@ export default async function NewAutomationPage() {
       </Button>
       <h1 className="text-2xl font-semibold tracking-tight">New automation</h1>
       <p className="mt-1 text-sm text-muted-foreground">
-        Tell ReelFarm what to post, how often, and how it should sound.
+        Tell tiktok-automation what to post, how often, and how it should sound.
       </p>
 
       <div className="mt-8">

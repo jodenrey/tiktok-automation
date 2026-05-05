@@ -14,7 +14,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "ReelFarm — AI TikTok Slideshow Automation",
+  title: "tiktok-automation — AI TikTok Slideshow Automation",
   description:
     "Generate, schedule, and publish TikTok slideshows on autopilot. Set up a niche, write a prompt, and let AI ship content while you sleep.",
 };

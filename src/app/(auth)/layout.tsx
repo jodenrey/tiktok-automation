@@ -13,7 +13,7 @@ export default function AuthLayout({ children }: { children: React.ReactNode }) 
           <div className="grid h-7 w-7 place-items-center rounded-md bg-gradient-to-br from-violet-500 via-fuchsia-500 to-orange-400 text-white shadow-lg shadow-fuchsia-500/30">
             <Sparkles className="h-3.5 w-3.5" />
           </div>
-          ReelFarm
+          tiktok-automation
         </Link>
       </header>
       <main className="flex flex-1 items-center justify-center px-6 pb-12">

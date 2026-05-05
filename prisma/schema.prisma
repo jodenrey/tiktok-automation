@@ -1,4 +1,4 @@
-// ReelFarm — AI TikTok Slideshow Automation
+// tiktok-automation — AI TikTok Slideshow Automation
 //
 // We default to PostgreSQL via DATABASE_URL. For local-only dev with no
 // Postgres instance, you can swap `provider` to "sqlite" and set

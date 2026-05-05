@@ -251,7 +251,7 @@ export function AutomationForm({ collections, tiktokAccounts, initial }: Props) 
         <CardHeader>
           <CardTitle>Image source</CardTitle>
           <CardDescription>
-            Where ReelFarm should get the slide background images.
+            Where tiktok-automation should get the slide background images.
           </CardDescription>
         </CardHeader>
         <CardContent className="grid gap-4 md:grid-cols-2">
@@ -410,7 +410,7 @@ export function AutomationForm({ collections, tiktokAccounts, initial }: Props) 
             <div>
               <div className="text-sm font-medium">Auto-publish to TikTok</div>
               <div className="text-xs text-muted-foreground">
-                Off = generate slideshows but only save drafts in ReelFarm.
+                Off = generate slideshows but only save drafts in tiktok-automation.
               </div>
             </div>
             <Switch

@@ -44,7 +44,7 @@ export function SignupForm() {
           redirect: false,
         });
 
-        toast.success("Welcome to ReelFarm");
+        toast.success("Welcome to tiktok-automation");
         router.push("/dashboard");
         router.refresh();
       }}

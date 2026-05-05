@@ -7,7 +7,7 @@ export default function LoginPage() {
     <Card>
       <CardHeader>
         <CardTitle className="text-xl">Welcome back</CardTitle>
-        <CardDescription>Log in to your ReelFarm dashboard.</CardDescription>
+        <CardDescription>Log in to your tiktok-automation dashboard.</CardDescription>
       </CardHeader>
       <CardContent>
         <LoginForm />
